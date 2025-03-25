@@ -21,26 +21,19 @@ public class InitController {
     private final IAuthService authService;
 
     public void load() {
-        Optional<String> htmlInitial = authService.init();
-        if (htmlInitial.isEmpty()) {
-            LOG.log(Level.INFO, "Can not load the app");
-            return;
-        }
-
-        Optional<String> token = authService.getToken(htmlInitial.get());
+        Optional<String> token = authService.getToken();
         if (token.isEmpty()) {
-            LOG.log(Level.INFO, "Can not get the Token");
+            LOG.log(Level.WARNING, "Can not get the Token");
             return;
         }
         System.out.println("Token: " + token.get());
         
         Optional<String> response = authService.log_in(token.get());
         if(response.isEmpty()) {
-            LOG.log(Level.INFO, "Cant not get response");
+            LOG.log(Level.WARNING, "Cant not get response");
             return;
         }
-        
-        LOG.log(Level.INFO, response.get());
+        LOG.log(Level.INFO, "All ok");
 
     }
 

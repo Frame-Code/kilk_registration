@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -15,23 +14,21 @@ import lombok.RequiredArgsConstructor;
 
 /**
  *
- * @author Artist-Code
+ * @author Daniel Mora Cantillo
  */
 @RequiredArgsConstructor
-public class RequestLoginImpl implements IRequest {
+public class RequestSearchImpl implements IRequest {
+    private static final Logger LOG = Logger.getLogger(RequestSearchImpl.class.getName());
 
-    private static final Logger LOG = Logger.getLogger(RequestLoginImpl.class.getName());
-    private final String URI = "http://servicios.epmtsd.gob.ec:5050/login";
     private final HttpClient client;
     private final CookieManager cookieManager;
 
     private Optional<String> loadCookiesAndGetTokenHTML() throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(URI))
+                .uri(new URI("http://servicios.epmtsd.gob.ec:5050/consult-vehicle-ws"))
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
         if (response.statusCode() != 200) {
             LOG.log(Level.INFO, "Error, cannot load cookies".concat(String.valueOf(response.statusCode())));
             return Optional.empty();
@@ -40,14 +37,24 @@ public class RequestLoginImpl implements IRequest {
     }
 
     @Override
+    public Optional<String> sendGet() {
+        try {
+            return loadCookiesAndGetTokenHTML();
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            LOG.log(Level.WARNING, "Exception loading the cookies and got the _token ".concat(e.getMessage()));
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public Optional<String> sendPost(String body) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(URI))
-                    .POST(BodyPublishers.ofString(body))
+                    .uri(new URI("http://servicios.epmtsd.gob.ec:5050/ajax-consult-vehicle-ws"))
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
                     .header("Content-Type", "application/json")
                     .header("Accept", "*/*")
-                    .header("Accept-Encoding", "gzip, deflate, br")
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -55,20 +62,10 @@ public class RequestLoginImpl implements IRequest {
                 LOG.log(Level.INFO, "Requests has been successfully");
                 return Optional.of(response.body());
             }
-            LOG.log(Level.WARNING, "Error on the login, status code: ".concat(String.valueOf(response.statusCode())));
+            LOG.log(Level.WARNING, "Error searching id, status code: ".concat(String.valueOf(response.statusCode())));
             return Optional.empty();
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            LOG.log(Level.WARNING, "Exception on the logging ".concat(e.getMessage()));
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public Optional<String> sendGet() {
-        try {
-            return loadCookiesAndGetTokenHTML();
-        } catch (IOException | InterruptedException | URISyntaxException e) {
-            LOG.log(Level.WARNING, "Exception loading the cookies and got the _token ".concat(e.getMessage()));
+            LOG.log(Level.WARNING, "Internal exception ".concat(e.getMessage()));
             return Optional.empty();
         }
     }
