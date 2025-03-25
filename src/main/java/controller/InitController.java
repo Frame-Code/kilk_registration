@@ -26,14 +26,13 @@ public class InitController {
             LOG.log(Level.WARNING, "Can not get the Token");
             return;
         }
-        System.out.println("Token: " + token.get());
         
         Optional<String> response = authService.log_in(token.get());
         if(response.isEmpty()) {
             LOG.log(Level.WARNING, "Cant not get response");
             return;
         }
-        LOG.log(Level.INFO, "All ok");
+        LOG.log(Level.INFO, "Login successfully");
 
     }
 

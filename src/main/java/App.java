@@ -7,7 +7,7 @@ import java.net.http.HttpClient;
 import requests.RequestLoginImpl;
 import requests.RequestSearchImpl;
 import service.AuthServiceImpl;
-import service.SearchVehicleImpl;
+import service.SearchVehicleServiceImpl;
 
 public class App {
 
@@ -18,14 +18,15 @@ public class App {
                 .cookieHandler(cookieManager)
                 .followRedirects(HttpClient.Redirect.NORMAL)
                 .build();
-        
+        var initFrm = new Init();
+
         InitController initController = new InitController(
-                new Init(),
+                initFrm,
                 new AuthServiceImpl(new RequestLoginImpl(client, cookieManager))
         );
         initController.load();
 
-        SearchVehicleImpl seach = new SearchVehicleImpl(new RequestSearchImpl(client, cookieManager));
+        SearchVehicleServiceImpl seach = new SearchVehicleServiceImpl(new RequestSearchImpl(client, cookieManager));
         System.out.println(seach.getInfoVehicle("MCT0232"));
     }
 }

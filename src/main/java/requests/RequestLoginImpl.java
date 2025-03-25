@@ -15,11 +15,10 @@ import lombok.RequiredArgsConstructor;
 
 /**
  *
- * @author Artist-Code
+ * @author Daniel Mora Cantillo
  */
 @RequiredArgsConstructor
 public class RequestLoginImpl implements IRequest {
-
     private static final Logger LOG = Logger.getLogger(RequestLoginImpl.class.getName());
     private final String URI = "http://servicios.epmtsd.gob.ec:5050/login";
     private final HttpClient client;
@@ -33,9 +32,10 @@ public class RequestLoginImpl implements IRequest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
-            LOG.log(Level.INFO, "Error, cannot load cookies".concat(String.valueOf(response.statusCode())));
+            LOG.log(Level.WARNING, "Error, cannot load cookies".concat(String.valueOf(response.statusCode())));
             return Optional.empty();
         }
+        LOG.log(Level.INFO, "Cookies loaded correctly");
         return Optional.of(response.body());
     }
 
@@ -52,7 +52,7 @@ public class RequestLoginImpl implements IRequest {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200 || response.statusCode() == 302) {
-                LOG.log(Level.INFO, "Requests has been successfully");
+                LOG.log(Level.INFO, "Request to login has been successfully");
                 return Optional.of(response.body());
             }
             LOG.log(Level.WARNING, "Error on the login, status code: ".concat(String.valueOf(response.statusCode())));

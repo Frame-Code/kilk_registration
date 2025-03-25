@@ -5,6 +5,6 @@ import java.util.Optional;
 /**
  * @author Daniel Mora Cantillo
  */
-public interface ISearchService {
+public interface ISearchVehicleService {
     Optional<String> getInfoVehicle(String id);
 }
