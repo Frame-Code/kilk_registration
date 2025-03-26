@@ -1,17 +1,13 @@
 
 import UI.Init;
 import UI.Principal;
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import controller.InitController;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.http.HttpClient;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import javax.swing.UIManager;
@@ -51,9 +47,9 @@ public class App {
                 );
                 initController.load();
                 
-                SearchVehicleServiceImpl seach = new SearchVehicleServiceImpl(new RequestSearchImpl(client, cookieManager));
+                //SearchVehicleServiceImpl seach = new SearchVehicleServiceImpl(new RequestSearchImpl(client, cookieManager));
 
-                System.out.println(seach.getInfoVehicle("MCT0232"));
+                //System.out.println(seach.getInfoVehicle("MCT0232"));
                 return null;
             }
 
@@ -64,10 +60,8 @@ public class App {
 
             }
         };
-
         worker.execute();
         initFrm.open();
-
     }
 
 }

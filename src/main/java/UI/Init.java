@@ -1,8 +1,6 @@
 package UI;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import utils.RoundedPanel;
-
 
 /**
  *
@@ -33,18 +31,22 @@ public class Init extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        contentPane.setBackground(new java.awt.Color(202, 202, 202));
+        contentPane.setBackground(new java.awt.Color(32, 28, 28));
 
-        pnlLoading.setBackground(new java.awt.Color(34, 34, 34));
+        pnlLoading.setBackground(new java.awt.Color(32, 28, 28));
         pnlLoading.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jLabel1.setFont(new java.awt.Font("Lucida Sans", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Wait (don't close this windows)");
+        jLabel1.setText("Wait (don't close this window)");
 
-        jLabel2.setFont(new java.awt.Font("Lucida Sans", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Logging in");
+
+        pnlBar.setBackground(new java.awt.Color(32, 28, 28));
 
         javax.swing.GroupLayout pnlBarLayout = new javax.swing.GroupLayout(pnlBar);
         pnlBar.setLayout(pnlBarLayout);
@@ -74,11 +76,12 @@ public class Init extends javax.swing.JFrame {
         pnlLoadingLayout.setVerticalGroup(
             pnlLoadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlLoadingLayout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(pnlBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout contentPaneLayout = new javax.swing.GroupLayout(contentPane);
