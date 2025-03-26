@@ -38,24 +38,31 @@ public class PrincipalWindowController {
             }
 
             List<String> licencesPlate = plateParser.separatePlates(value);
-            Optional<String> responseHTML = consultPlate.findInfoVehicle(licencesPlate.get(0)); //Por revisar su dato de retorno
-            if(responseHTML.isEmpty()) {
+            //Optional<String> responseHTML = consultPlate.findInfoVehicle(licencesPlate.get(0)); //Por revisar su dato de retorno
+            List<Optional<String>> responses = consultPlate.findInfoVehicle(licencesPlate);
+            if(responses.isEmpty()) {
                 JOptionPane.showMessageDialog(principalFrm,
                         "Error consultando las placas",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if(responseHTML.get().contains("No se encontro ningun registro")) {
-                LOG.log(Level.WARNING, "No se encontro registros");
-                JOptionPane.showMessageDialog(principalFrm,
-                        "No se encontro registros",
-                        "Warning",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            Optional<VehicleDTO> vehicle = vehicleInfoParserService.parseVehicle(responseHTML.get());
-            System.out.println(vehicle.get());
+            responses.forEach(opt -> {
+                if(opt.isEmpty()) {
+                    LOG.log(Level.WARNING, "Request without information");
+                    return;
+                }
+                if(responses.contains("No se encontro ningun registro")) {
+                    LOG.log(Level.WARNING, "No se encontro registros");
+                    JOptionPane.showMessageDialog(principalFrm,
+                            "No se encontro registros",
+                            "Warning",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                Optional<VehicleDTO> vehicle = vehicleInfoParserService.parseVehicle(opt.get());
+                System.out.println(vehicle.get());
+            });
         });
 
         principalFrm.getBtnClean().addActionListener(e -> principalFrm.getTxtArea().setText(""));

@@ -4,6 +4,7 @@ import UI.PrincipalWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import controller.InitWindowController;
 import controller.PrincipalWindowController;
+import requests.impl.RequestLoginImpl;
 import requests.impl.RequestSearchImpl;
 import service.impl.AuthServiceImpl;
 import service.impl.ConsultPlateServiceImpl;
@@ -43,7 +44,7 @@ public class App {
             protected Void doInBackground() throws Exception {
                 InitWindowController initController = new InitWindowController(
                         initWindowFrm,
-                        new AuthServiceImpl(new RequestSearchImpl.RequestLoginImpl(client, cookieManager))
+                        new AuthServiceImpl(new RequestLoginImpl(client, cookieManager))
                 );
                 if(initController.load()) {
                     return null;

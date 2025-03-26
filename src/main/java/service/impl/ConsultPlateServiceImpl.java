@@ -8,6 +8,7 @@ import service.interfaces.IConsultPlateService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +23,7 @@ public class ConsultPlateServiceImpl implements IConsultPlateService {
     @Override
     public Optional<String> findInfoVehicle(String licensePlate) {
         Optional<String> token = getToken();
-        if(token.isEmpty()) {
+        if (token.isEmpty()) {
             LOG.log(Level.WARNING, "Token not founded");
             return Optional.empty();
         }
@@ -33,8 +34,27 @@ public class ConsultPlateServiceImpl implements IConsultPlateService {
     }
 
     @Override
-    public Optional<String> findInfoVehicle(List<String> licensesPlates) {
-        return Optional.empty();
+    public List<Optional<String>> findInfoVehicle(List<String> licensesPlates) {
+        if (licensesPlates.isEmpty()) {
+            return List.of();
+        }
+        int nThreads = Math.min(licensesPlates.size(), 5);
+        var executor = Executors.newFixedThreadPool(nThreads);
+
+        Callable<List<Optional<String>>> task = () -> {
+            return licensesPlates.stream()
+                    .map(this::findInfoVehicle)
+                    .toList();
+        };
+
+        Future<List<Optional<String>>> resultFuture = executor.submit(task);
+        LOG.log(Level.INFO, "Executing the server requests");
+        try {
+            return resultFuture.get();
+        } catch (CancellationException | ExecutionException | InterruptedException e) {
+            LOG.log(Level.INFO, "Interruption exception occur ".concat(e.getMessage()));
+            return List.of();
+        }
     }
 
     private Optional<String> getToken() {

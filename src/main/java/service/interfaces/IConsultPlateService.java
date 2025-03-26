@@ -8,5 +8,5 @@ import java.util.Optional;
  */
 public interface IConsultPlateService {
     Optional<String> findInfoVehicle(String licensePlate);
-    Optional<String> findInfoVehicle(List<String> licensesPlates);
+    List<Optional<String>> findInfoVehicle(List<String> licensesPlates);
 }
