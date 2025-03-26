@@ -1,5 +1,5 @@
 
-package service;
+package service.interfaces;
 
 import java.util.Optional;
 

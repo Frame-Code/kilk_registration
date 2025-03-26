@@ -1,4 +1,4 @@
-package requests;
+package requests.interfaces;
 
 import java.util.Optional;
 

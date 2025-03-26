@@ -1,11 +1,12 @@
-package service;
+package service.impl;
 
 import com.google.gson.Gson;
-import dto.UserLogin;
+import dto.UserLoginDTO;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import requests.IRequest;
+import requests.interfaces.IRequest;
+import service.interfaces.IAuthService;
 
 /**
  *
@@ -19,7 +20,7 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     public Optional<String> log_in(String token) {
         String jsonBody = new Gson().toJson(
-                new UserLogin(token,
+                new UserLoginDTO(token,
                         dotenv.get("USERNAME_WEB"),
                         dotenv.get("PASSWORD_WEB")));
         return requestLogin.sendPost(jsonBody);

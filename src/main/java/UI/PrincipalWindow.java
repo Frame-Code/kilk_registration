@@ -2,20 +2,17 @@ package UI;
 
 import UI.components.RoundedPanelWithShadow;
 import com.formdev.flatlaf.FlatDarkLaf;
-import controller.PrincipalController;
 import lombok.Getter;
-import service.LicensePlateServiceImpl;
 
 import java.awt.Color;
-import javax.swing.*;
 
 /**
  *
  * @author Daniel Mora Cantillo
  */
-public class Principal extends javax.swing.JFrame {
+public class PrincipalWindow extends javax.swing.JFrame {
 
-    public Principal() {
+    public PrincipalWindow() {
         FlatDarkLaf.setup();
         initComponents();
         setResizable(false);
@@ -172,21 +169,7 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    public static void main(String args[]) {
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    UIManager.setLookAndFeel(new FlatDarkLaf());
-                } catch (UnsupportedLookAndFeelException e) {
-                    System.out.println("Error loading UI look and feel");
-                }
-                Principal p = new Principal();
-                new PrincipalController(p, new LicensePlateServiceImpl());
-                p.setVisible(true);
-            }
-        });
-    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     @Getter
     private javax.swing.JButton btnClean;

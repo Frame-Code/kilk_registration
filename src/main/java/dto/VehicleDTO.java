@@ -1,8 +1,6 @@
 package dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -10,8 +8,11 @@ import java.time.LocalDate;
  * @author Daniel Mora Cantillo
  */
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @ToString
-public class Vehicle {
+public class VehicleDTO {
     private String placa;
     private String chasis;
     private LocalDate fechaRenovacion;

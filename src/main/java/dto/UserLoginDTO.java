@@ -5,7 +5,7 @@ package dto;
  *
  * @author Daniel Mora Cantillo
  */
-public record UserLogin(
+public record UserLoginDTO(
         String _token, 
         String user, 
         String password) {}

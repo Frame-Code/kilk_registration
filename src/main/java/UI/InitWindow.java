@@ -6,9 +6,9 @@ import com.formdev.flatlaf.FlatDarkLaf;
  *
  * @author Daniel Mora Cantillo
  */
-public class Init extends javax.swing.JFrame {
+public class InitWindow extends javax.swing.JFrame {
 
-    public Init() {
+    public InitWindow() {
         FlatDarkLaf.setup();
         initComponents();
         setResizable(false);
