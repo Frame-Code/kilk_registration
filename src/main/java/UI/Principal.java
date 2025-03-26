@@ -2,9 +2,12 @@ package UI;
 
 import UI.components.RoundedPanelWithShadow;
 import com.formdev.flatlaf.FlatDarkLaf;
+import controller.PrincipalController;
+import lombok.Getter;
+import service.LicensePlateServiceImpl;
+
 import java.awt.Color;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 /**
  *
@@ -24,31 +27,24 @@ public class Principal extends javax.swing.JFrame {
     public void open() {
         setVisible(true);
     }
+    public void close(){
+        setVisible(false);
+        dispose();
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
         contentPane = new javax.swing.JPanel();
         pnlPrincipal = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtArea = new javax.swing.JTextArea();
         jPanel2 = new RoundedPanelWithShadow(25, new Color(94, 93, 98, 100), 3);
         jLabel3 = new javax.swing.JLabel();
         pnlPrincipal1 = new javax.swing.JPanel();
         btnClose = new javax.swing.JButton();
         btnGenerate = new javax.swing.JButton();
         btnClean = new javax.swing.JButton();
-
-        jTextArea2.setBackground(new java.awt.Color(19, 24, 25));
-        jTextArea2.setColumns(20);
-        jTextArea2.setFont(new java.awt.Font("Lucida Sans", 0, 12)); // NOI18N
-        jTextArea2.setLineWrap(true);
-        jTextArea2.setRows(5);
-        jTextArea2.setWrapStyleWord(true);
-        jScrollPane2.setViewportView(jTextArea2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -57,13 +53,13 @@ public class Principal extends javax.swing.JFrame {
         pnlPrincipal.setBackground(new java.awt.Color(32, 28, 28));
         pnlPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Escribe aquí las matriculas separadas por coma!", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
-        jTextArea1.setBackground(new java.awt.Color(42, 39, 39));
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Lucida Sans", 0, 12)); // NOI18N
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setWrapStyleWord(true);
-        jScrollPane1.setViewportView(jTextArea1);
+        txtArea.setBackground(new java.awt.Color(42, 39, 39));
+        txtArea.setColumns(20);
+        txtArea.setFont(new java.awt.Font("Lucida Sans", 0, 12)); // NOI18N
+        txtArea.setLineWrap(true);
+        txtArea.setRows(5);
+        txtArea.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(txtArea);
 
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
         pnlPrincipal.setLayout(pnlPrincipalLayout);
@@ -185,23 +181,25 @@ public class Principal extends javax.swing.JFrame {
                 } catch (UnsupportedLookAndFeelException e) {
                     System.out.println("Error loading UI look and feel");
                 }
-
-                new Principal().setVisible(true);
+                Principal p = new Principal();
+                new PrincipalController(p, new LicensePlateServiceImpl());
+                p.setVisible(true);
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    @Getter
     private javax.swing.JButton btnClean;
+    @Getter
     private javax.swing.JButton btnClose;
+    @Getter
     private javax.swing.JButton btnGenerate;
     private javax.swing.JPanel contentPane;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    @Getter
+    private javax.swing.JTextArea txtArea;
     private javax.swing.JPanel pnlPrincipal;
     private javax.swing.JPanel pnlPrincipal1;
     // End of variables declaration//GEN-END:variables
