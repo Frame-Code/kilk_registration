@@ -1,13 +1,14 @@
-package service;
+package service.impl;
 
 import dto.VehicleDTO;
 import lombok.RequiredArgsConstructor;
 import service.interfaces.IConsultPlateService;
-import service.interfaces.IMediatorPlate;
+import service.interfaces.IMediatorPlateService;
 import service.interfaces.IPlateParserService;
 import service.interfaces.IVehicleInfoParserService;
 
-import javax.swing.*;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
@@ -18,9 +19,12 @@ import java.util.logging.Logger;
  * @author Daniel Mora Cantillo
  */
 @RequiredArgsConstructor
-public class IMediatorPlateImpl implements IMediatorPlate {
-    private StringBuilder platesWithNovelties = new StringBuilder();
-    private static final Logger LOG = Logger.getLogger(IMediatorPlateImpl.class.getName());
+public class MediatorPlateServiceImpl implements IMediatorPlateService {
+    private static final Logger LOG = Logger.getLogger(MediatorPlateServiceImpl.class.getName());
+
+    private final StringBuilder platesWithNovelties = new StringBuilder();
+    private final StringBuilder platesWithBeforeDate = new StringBuilder();
+
     private final IPlateParserService plateParser;
     private final IConsultPlateService consultPlate;
     private final IVehicleInfoParserService vehicleInfoParserService;
@@ -88,7 +92,34 @@ public class IMediatorPlateImpl implements IMediatorPlate {
     }
 
     @Override
+    public List<VehicleDTO> verifyRenovationDate(List<Optional<VehicleDTO>> vehicleList) {
+        if(vehicleList.isEmpty()) {
+            return List.of();
+        }
+
+        return vehicleList.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(auto -> auto.getFechaRenovacion() != null)
+                .map(auto -> {
+                    if(auto.getFechaRenovacion().isBefore(LocalDate.of(2025,1,1))) {
+                        platesWithBeforeDate.append(auto.getPlaca().concat("\n"));
+                        return auto;
+                    }
+                    return auto;
+                })
+                .filter(auto -> auto.getFechaRenovacion().isAfter(LocalDate.of(2025,1,1)))
+                .toList();
+
+    }
+
+    @Override
     public String getPlatesWithNovelties() {
         return platesWithNovelties.toString();
+    }
+
+    @Override
+    public String getPlatesWithBeforeDate() {
+        return platesWithBeforeDate.toString();
     }
 }

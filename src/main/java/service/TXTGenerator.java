@@ -13,12 +13,8 @@ import java.util.logging.Logger;
 public class TXTGenerator extends DocumentGenerator {
     private static final Logger LOG = Logger.getLogger(TXTGenerator.class.getName());
 
-    public TXTGenerator(String path) {
-        super(path);
-    }
-
     @Override
-    public void generate(String content) {
+    public void generate(String content, String path) {
         try {
             File file = new File(path);
             if(!file.createNewFile()) {
