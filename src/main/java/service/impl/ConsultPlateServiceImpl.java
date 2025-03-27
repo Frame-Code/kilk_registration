@@ -35,26 +35,7 @@ public class ConsultPlateServiceImpl implements IConsultPlateService {
 
     @Override
     public List<Optional<String>> findInfoVehicle(List<String> licensesPlates) {
-        if (licensesPlates.isEmpty()) {
-            return List.of();
-        }
-        int nThreads = Math.min(licensesPlates.size(), 5);
-        var executor = Executors.newFixedThreadPool(nThreads);
-
-        Callable<List<Optional<String>>> task = () -> {
-            return licensesPlates.stream()
-                    .map(this::findInfoVehicle)
-                    .toList();
-        };
-
-        Future<List<Optional<String>>> resultFuture = executor.submit(task);
-        LOG.log(Level.INFO, "Executing the server requests");
-        try {
-            return resultFuture.get();
-        } catch (CancellationException | ExecutionException | InterruptedException e) {
-            LOG.log(Level.INFO, "Interruption exception occur ".concat(e.getMessage()));
-            return List.of();
-        }
+        return List.of();
     }
 
     private Optional<String> getToken() {

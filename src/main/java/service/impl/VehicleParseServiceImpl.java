@@ -62,7 +62,7 @@ public class VehicleParseServiceImpl implements IVehicleInfoParserService {
             vehicle.setPropietario(values.get(5));
         }
 
-        if(vehicle.getChasis() == null || vehicle.getMarca() == null || vehicle.getModelo() == null) {
+        if(vehicle.getPlaca() == null) {
             LOG.log(Level.WARNING, "Not vehicle founded");
             return Optional.empty();
         }

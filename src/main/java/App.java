@@ -6,10 +6,12 @@ import controller.InitWindowController;
 import controller.PrincipalWindowController;
 import requests.impl.RequestLoginImpl;
 import requests.impl.RequestSearchImpl;
+import service.IMediatorPlateImpl;
 import service.impl.AuthServiceImpl;
 import service.impl.ConsultPlateServiceImpl;
 import service.impl.PlateParserServiceImpl;
 import service.impl.VehicleParseServiceImpl;
+import service.interfaces.IMediatorPlate;
 
 
 import javax.swing.*;
@@ -56,9 +58,9 @@ public class App {
             protected void done() {
                 initWindowFrm.close();
                 new PrincipalWindowController(principalFrm,
-                        new PlateParserServiceImpl(),
-                        new ConsultPlateServiceImpl(new RequestSearchImpl(client, cookieManager)),
-                        new VehicleParseServiceImpl())
+                        new IMediatorPlateImpl(new PlateParserServiceImpl(),
+                                new ConsultPlateServiceImpl(new RequestSearchImpl(client, cookieManager)),
+                                new VehicleParseServiceImpl()))
                         .addListeners(client, cookieManager);
                 principalFrm.open();
 
