@@ -4,13 +4,16 @@ import UI.components.RoundedPanelWithShadow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import lombok.Getter;
 
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.util.Objects;
 
 /**
  *
  * @author Daniel Mora Cantillo
  */
-public class PrincipalWindow extends javax.swing.JFrame {
+public class PrincipalWindow extends JFrame {
 
     public PrincipalWindow() {
         FlatDarkLaf.setup();
@@ -19,6 +22,8 @@ public class PrincipalWindow extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Generate report...");
+        ImageIcon icono = new ImageIcon(Objects.requireNonNull(PrincipalWindow.class.getResource("/images/applicationIcon.png")));
+        setIconImage(icono.getImage());
     }
 
     public void open() {

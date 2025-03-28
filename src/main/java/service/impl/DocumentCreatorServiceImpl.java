@@ -30,18 +30,18 @@ public class DocumentCreatorServiceImpl implements IDocumentCreatorService {
         Runnable task = () -> {
             try {
                 generatorPDF.generate(documentDataDTO);
+                LOG.log(Level.INFO, "Report PDF generated correctly");
             } catch (IOException e) {
-                LOG.log(Level.SEVERE, "Exception error: can't not generate the pdf, error: " + e.getMessage());
+                LOG.log(Level.SEVERE, "IO Exception creating the report pdf with output path: ", documentDataDTO.getOutputPath());
                 throw new RuntimeException(e);
             }
+
         };
 
         try {
             executor.submit(task);
-            return;
         } catch (CancellationException e) {
             LOG.log(Level.WARNING, "Interruption exception occur ".concat(e.getMessage()));
-            return;
         } finally {
             executor.shutdown();
         }
@@ -55,9 +55,12 @@ public class DocumentCreatorServiceImpl implements IDocumentCreatorService {
         }
         try {
             generatorTXT.generate(documentDataDTO);
+            LOG.log(Level.INFO, "Report PDF generated correctly");
         } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Exception error: can't not generate the txt, error: " + e.getMessage());
+            LOG.log(Level.SEVERE, "IO Exception creating the report txt with output path: ", documentDataDTO.getOutputPath());
             throw new RuntimeException(e);
         }
+
+
     }
 }

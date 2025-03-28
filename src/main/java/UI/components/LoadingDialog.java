@@ -1,11 +1,13 @@
 package UI.components;
 
-
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JDialog;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
-import java.awt.*;
+import java.awt.Font;
+import java.awt.BorderLayout;
+import java.util.Objects;
 
 
 /**
@@ -21,6 +23,8 @@ public class LoadingDialog extends JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setSize(400,100);
+        ImageIcon icono = new ImageIcon(Objects.requireNonNull(LoadingDialog.class.getResource("/images/applicationIcon.png")));
+        setIconImage(icono.getImage());
         addComponents(titleLabel);
     }
 

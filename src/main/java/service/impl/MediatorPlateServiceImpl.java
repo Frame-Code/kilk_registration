@@ -24,8 +24,8 @@ import java.util.logging.Logger;
 public class MediatorPlateServiceImpl implements IMediatorPlateService {
     private static final Logger LOG = Logger.getLogger(MediatorPlateServiceImpl.class.getName());
 
-    private final StringBuilder platesWithNovelties = new StringBuilder();
-    private final StringBuilder platesWithBeforeDate = new StringBuilder();
+    private StringBuilder platesWithNovelties;
+    private StringBuilder platesWithBeforeDate;
 
     private final IPlateParserService plateParser;
     private final IConsultPlateService consultPlate;
@@ -66,6 +66,9 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
 
     @Override
     public Optional<VehicleDTO> parseVehicleFromHTML(String html) {
+        platesWithNovelties = new StringBuilder();
+        platesWithBeforeDate = new StringBuilder();
+
         var executor = Executors.newFixedThreadPool(3);
 
         Callable<Optional<VehicleDTO>> task = () -> {
@@ -126,7 +129,7 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
     }
 
     @Override
-    public void exportFiles(List<VehicleDTO> vehicleList, ISaveFileService saveFileService,String inputPath) {
+    public void exportFiles(List<VehicleDTO> vehicleList, ISaveFileService saveFileService,String inputPath) throws Exception {
         documentCreatorService.createTXTReport(DocumentDataDTO.builder()
                 .outputPath(saveFileService.setFileName("Placas no encontradas.txt"))
                 .rawContent(getPlatesWithNovelties())

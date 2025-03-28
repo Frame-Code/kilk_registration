@@ -89,7 +89,7 @@ public class PrincipalWindowController {
 
         if (responses.isEmpty()) {
             JOptionPane.showMessageDialog(principalFrm,
-                    "Error consultando las placas",
+                    "Error al consultar las placas en el servidor",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
@@ -113,9 +113,24 @@ public class PrincipalWindowController {
         });
 
         var vehicleListFinal = mediatorPlate.verifyRenovationDate(vehicleList);
-        mediatorPlate.exportFiles(vehicleListFinal, saveFileService, inputFileService.getFilePath());
+        if(vehicleListFinal.isEmpty()) {
+            LOG.log(Level.WARNING, "Error don't exist vehicles to generate the report");
+            JOptionPane.showMessageDialog(principalFrm,
+                    "No se han encontrado vehicles para generar el reporte",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        vehicleListFinal.forEach(System.out::println);
+        try {
+            mediatorPlate.exportFiles(vehicleListFinal, saveFileService, inputFileService.getFilePath());
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, "Error generating reports");
+            JOptionPane.showMessageDialog(principalFrm,
+                    "Error creando reportes PDF y TXT",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
 }

@@ -36,7 +36,7 @@ public class InitWindowController {
         
         Optional<String> response = authService.log_in(token.get());
         if(response.isEmpty()) {
-            LOG.log(Level.WARNING, "Cant not get response");
+            LOG.log(Level.WARNING, "Can't get response");
             JOptionPane.showMessageDialog(frmInitWindow,
                     "Error when login in",
                     "Error",

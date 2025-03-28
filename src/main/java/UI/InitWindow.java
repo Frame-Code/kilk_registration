@@ -2,11 +2,15 @@ package UI;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+import java.util.Objects;
+
 /**
  *
  * @author Daniel Mora Cantillo
  */
-public class InitWindow extends javax.swing.JFrame {
+public class InitWindow extends JFrame {
 
     public InitWindow() {
         FlatDarkLaf.setup();
@@ -15,6 +19,9 @@ public class InitWindow extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setTitle("Loading...");
+        ImageIcon icono = new ImageIcon(Objects.requireNonNull(InitWindow.class.getResource("/images/applicationIcon.png")));
+        setIconImage(icono.getImage());
+
         loadProgressBar();
     }
 

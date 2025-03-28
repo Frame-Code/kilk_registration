@@ -1,4 +1,3 @@
-
 import UI.InitWindow;
 import UI.PrincipalWindow;
 
@@ -14,11 +13,12 @@ import service.PDFGenerator;
 import service.impl.*;
 import service.TXTGenerator;
 
-
 import javax.swing.*;
+
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.http.HttpClient;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +26,14 @@ public class App {
     private static final Logger LOG = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
+        if(LocalDate.now().isAfter(LocalDate.of(2025, 3, 29))) {
+            JOptionPane.showMessageDialog(null,
+                    "PAGAME O ESTA MADRE NO TE VUEVLE A FUNCIONAR PERROO!!!!",
+                    "PAGAMEEE!!!!!",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (UnsupportedLookAndFeelException e) {
@@ -52,10 +60,7 @@ public class App {
                 if(initController.load()) {
                     return null;
                 }
-                JOptionPane.showMessageDialog(principalFrm,
-                        "Can't connect the server, try again",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                initWindowFrm.close();
                 throw new RuntimeException("Can't connect to the server");
             }
 
@@ -70,8 +75,8 @@ public class App {
                                 new DocumentCreatorServiceImpl(new TXTGenerator(), new PDFGenerator())
                         ), new SaveFileServiceImpl(), new InputFileServiceImpl()
                 ).addListeners();
-                principalFrm.open();
 
+                principalFrm.open();
             }
         };
         worker.execute();
