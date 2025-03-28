@@ -3,6 +3,7 @@ package service.impl;
 import dto.DocumentDataDTO;
 import dto.VehicleDTO;
 import lombok.RequiredArgsConstructor;
+import service.CONTENT_FIELDS_MAP_ENUM;
 import service.interfaces.*;
 import service.interfaces.IDocumentCreatorService;
 
@@ -140,14 +141,14 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
                     .inputPath(inputPath)
                     .outputPath(saveFileService.setFileName("Report ".concat(auto.getPlaca()).concat(".pdf")))
                     .contentFields(Map.of(
-                            "nRevision", "000".concat(String.valueOf(new Random().nextInt(100) + 893)),
-                            "marca", auto.getMarca(),
-                            "modelo", auto.getModelo(),
-                            "year", auto.getAnioVehiculo(),
-                            "newCheckYear", auto.getFechaRenovacion().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                            "chasis", auto.getChasis(),
-                            "propietario", auto.getPropietario(),
-                            "placa", auto.getPlaca()
+                            CONTENT_FIELDS_MAP_ENUM.N_REVISION.toString(), "000".concat(String.valueOf(new Random().nextInt(99) + 893)),
+                            CONTENT_FIELDS_MAP_ENUM.MARCA.toString(), auto.getMarca(),
+                            CONTENT_FIELDS_MAP_ENUM.MODELO.toString(), auto.getModelo(),
+                            CONTENT_FIELDS_MAP_ENUM.YEAR.toString(), auto.getAnioVehiculo(),
+                            CONTENT_FIELDS_MAP_ENUM.CHECK_YEAR.toString(), auto.getFechaRenovacion().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                            CONTENT_FIELDS_MAP_ENUM.CHASIS.toString(), auto.getChasis(),
+                            CONTENT_FIELDS_MAP_ENUM.PROPIETARIO.toString(), auto.getPropietario(),
+                            CONTENT_FIELDS_MAP_ENUM.PLACA.toString(), auto.getPlaca()
                     ))
                     .build());
         });

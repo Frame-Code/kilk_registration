@@ -25,7 +25,7 @@ public class InitWindowController {
     public boolean load() {
         Optional<String> token = authService.getToken();
         if (token.isEmpty()) {
-            LOG.log(Level.WARNING, "Can not get the Token");
+            LOG.log(Level.WARNING, "Can't get the Token");
             JOptionPane.showMessageDialog(frmInitWindow,
                     "Error when login in",
                     "Error",

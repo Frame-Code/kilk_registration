@@ -2,6 +2,7 @@ package controller;
 
 import UI.PrincipalWindow;
 
+import UI.components.LoadingDialog;
 import dto.VehicleDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -11,8 +12,6 @@ import service.interfaces.IMediatorPlateService;
 import service.interfaces.ISaveFileService;
 
 import javax.swing.*;
-import java.net.CookieManager;
-import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,11 +28,16 @@ public class PrincipalWindowController {
     private final IMediatorPlateService mediatorPlate;
     private final ISaveFileService saveFileService;
     private final ISaveFileService inputFileService;
+    private final LoadingDialog loadingDialog = new LoadingDialog("Loading", "Generating reports (don´t close this window)");
 
-    public void addListeners(HttpClient client, CookieManager cookieManager) {
+    public void addListeners() {
+        principalFrm.getBtnClean().addActionListener(e -> principalFrm.getTxtArea().setText(""));
+        principalFrm.getBtnClose().addActionListener(e -> principalFrm.close());
+
         principalFrm.getBtnGenerate().addActionListener(e -> {
-            String value = principalFrm.getTxtArea().getText();
-            if (value == null || value.isEmpty()) {
+
+            String platesUI = principalFrm.getTxtArea().getText();
+            if (platesUI == null || platesUI.isEmpty()) {
                 JOptionPane.showMessageDialog(principalFrm,
                         "Escribe los valores de las placas para continuar!",
                         "Placas nos identificadas",
@@ -50,44 +54,68 @@ public class PrincipalWindowController {
                 return;
             }
 
-            List<Optional<VehicleDTO>> vehicleList = new ArrayList<>();
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    loadingDialog.open();
+                    principalFrm.setEnabled(false);
+                    executeTasks(platesUI);
+                    return null;
+                }
 
-            List<String> licencesPlate = mediatorPlate.separatePlates(value);
+                @Override
+                protected void done() {
+                    loadingDialog.close();
+                    principalFrm.setEnabled(true);
+                    principalFrm.getTxtArea().setText("");
+                    JOptionPane.showMessageDialog(principalFrm,
+                            "Reports generated correctly",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            };
+            worker.execute();
+        });
 
-            List<Optional<String>> responses = mediatorPlate.consultPlates(licencesPlate);
+    }
 
-            if (responses.isEmpty()) {
-                JOptionPane.showMessageDialog(principalFrm,
-                        "Error consultando las placas",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+
+    private void executeTasks(String platesUI) {
+        List<Optional<VehicleDTO>> vehicleList = new ArrayList<>();
+
+        List<String> licencesPlate = mediatorPlate.separatePlates(platesUI);
+
+        List<Optional<String>> responses = mediatorPlate.consultPlates(licencesPlate);
+
+        if (responses.isEmpty()) {
+            JOptionPane.showMessageDialog(principalFrm,
+                    "Error consultando las placas",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        responses.forEach(opt -> {
+            if (opt.isEmpty()) {
+                LOG.log(Level.WARNING, "Request without information");
                 return;
             }
 
-            responses.forEach(opt -> {
-                if (opt.isEmpty()) {
-                    LOG.log(Level.WARNING, "Request without information");
-                    return;
-                }
-                if (responses.contains("No se encontro ningun registro")) {
-                    LOG.log(Level.WARNING, "No se encontro registros");
-                    JOptionPane.showMessageDialog(principalFrm,
-                            "No se encontro registros",
-                            "Warning",
-                            JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                 vehicleList.add(mediatorPlate.parseVehicleFromHTML(opt.get()));
-            });
-
-            var vehicleListFinal = mediatorPlate.verifyRenovationDate(vehicleList);
-            mediatorPlate.exportFiles(vehicleListFinal, saveFileService, inputFileService.getFilePath());
-
-            vehicleListFinal.forEach(System.out::println);
+            if (responses.contains("No se encontro ningun registro")) {
+                LOG.log(Level.WARNING, "No se encontro registros");
+                JOptionPane.showMessageDialog(principalFrm,
+                        "No se encontro registros",
+                        "Warning",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            vehicleList.add(mediatorPlate.parseVehicleFromHTML(opt.get()));
         });
 
-        principalFrm.getBtnClean().addActionListener(e -> principalFrm.getTxtArea().setText(""));
-        principalFrm.getBtnClose().addActionListener(e -> principalFrm.close());
+        var vehicleListFinal = mediatorPlate.verifyRenovationDate(vehicleList);
+        mediatorPlate.exportFiles(vehicleListFinal, saveFileService, inputFileService.getFilePath());
+
+        vehicleListFinal.forEach(System.out::println);
     }
 
 }

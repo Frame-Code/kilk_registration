@@ -52,6 +52,10 @@ public class App {
                 if(initController.load()) {
                     return null;
                 }
+                JOptionPane.showMessageDialog(principalFrm,
+                        "Can't connect the server, try again",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 throw new RuntimeException("Can't connect to the server");
             }
 
@@ -65,7 +69,7 @@ public class App {
                                 new VehicleParseServiceImpl(),
                                 new DocumentCreatorServiceImpl(new TXTGenerator(), new PDFGenerator())
                         ), new SaveFileServiceImpl(), new InputFileServiceImpl()
-                ).addListeners(client, cookieManager);
+                ).addListeners();
                 principalFrm.open();
 
             }
