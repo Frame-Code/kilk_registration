@@ -1,18 +1,23 @@
 package controller;
 
 import UI.PrincipalWindow;
+
+import dto.DocumentDataDTO;
 import dto.VehicleDTO;
+
 import lombok.RequiredArgsConstructor;
-import service.DocumentGenerator;
+
+import service.interfaces.IDocumentCreatorService;
 import service.interfaces.IMediatorPlateService;
 import service.interfaces.ISaveFileService;
 
 import javax.swing.*;
+
 import java.net.CookieManager;
 import java.net.http.HttpClient;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +29,7 @@ public class PrincipalWindowController {
     private final static Logger LOG = Logger.getLogger(PrincipalWindowController.class.getName());
     private final PrincipalWindow principalFrm;
     private final IMediatorPlateService mediatorPlate;
-    private final DocumentGenerator documentGenerator;
+    private final IDocumentCreatorService documentCreatorService;
     private final ISaveFileService saveFileService;
 
     public void addListeners(HttpClient client, CookieManager cookieManager) {
@@ -78,9 +83,33 @@ public class PrincipalWindowController {
                 return;
             }
             var vehicleListFinal = mediatorPlate.verifyRenovationDate(vehicleList);
-            documentGenerator.generate(mediatorPlate.getPlatesWithNovelties(), platesWithNoveltiesPath);
-            documentGenerator.generate(mediatorPlate.getPlatesWithBeforeDate(), platesWithBadDatePath);
 
+            documentCreatorService.createTXTReport(DocumentDataDTO.builder()
+                            .outputPath(platesWithNoveltiesPath)
+                            .rawContent(mediatorPlate.getPlatesWithNovelties())
+                            .build());
+            documentCreatorService.createTXTReport(DocumentDataDTO.builder()
+                            .outputPath(platesWithBadDatePath)
+                            .rawContent(mediatorPlate.getPlatesWithBeforeDate())
+                            .build());
+            AtomicInteger docNumber = new AtomicInteger();
+            vehicleListFinal.forEach(auto -> {
+                documentCreatorService.createPDFReport(DocumentDataDTO.builder()
+                                .inputPath("C:\\Users\\Artist-Code\\Downloads\\Document 1 this.name.pdf")
+                                .outputPath("C:\\Users\\Artist-Code\\Downloads\\documento_editado".
+                                        concat(String.valueOf(docNumber.get())).concat(".pdf"))
+                                .contentFields(Map.of(
+                                        "nRevision", "000".concat(String.valueOf(new Random().nextInt(100) + 800)),
+                                        "marca", auto.getMarca(),
+                                        "modelo", auto.getModelo(),
+                                        "year", "2004",
+                                        "chasis", auto.getChasis(),
+                                        "propietario", auto.getPropietario(),
+                                        "placa", auto.getPlaca()
+                                ))
+                                .build());
+                docNumber.getAndIncrement();
+            });
             vehicleListFinal.forEach(System.out::println);
         });
 

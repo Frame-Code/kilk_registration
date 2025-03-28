@@ -1,15 +1,11 @@
 package service;
 
-
+import dto.DocumentDataDTO;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
-import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,31 +14,151 @@ import java.io.IOException;
  * @author Daniel Mora Cantillo
  */
 public class Test {
+    private static final File NORMAL_FONT = new File("src\\main\\resources\\fonts\\arialmt.ttf");
+    private static final File BOLD_FONT = new File("src\\main\\resources\\fonts\\ARIALMTBLACK.TTF");
 
-    public static void editVehiclePDF(String inputPath, String outputPath, String nRevision,
-                                      String newMarca, String newModelo, String year,
-                                      String newChasis, String newPropietario,
-                                      String newPlaca) throws IOException {
 
-        // Cargar el documento PDF
+    public static void generate(DocumentDataDTO documentDataDTO) throws IOException {
+        PDDocument document = PDDocument.load(new File(documentDataDTO.getInputPath()));
 
-        // Crear un nuevo content stream para modificar la página
+        // Asumimos que los campos están en la primera página
+        PDPage page = document.getPage(0);
+
+        PDType0Font customFont = PDType0Font.load(document, NORMAL_FONT);
+        PDType0Font customFontBold = PDType0Font.load(document, BOLD_FONT);
+
+        generate(document, page, customFont, customFontBold, documentDataDTO.getOutputPath(),
+                documentDataDTO.getContentFields().get("nRevision"),
+                documentDataDTO.getContentFields().get("marca"),
+                documentDataDTO.getContentFields().get("modelo"),
+                documentDataDTO.getContentFields().get("year"),
+                documentDataDTO.getContentFields().get("chasis"),
+                documentDataDTO.getContentFields().get("propietario"),
+                documentDataDTO.getContentFields().get("placa"));
 
     }
 
-    public static void main(String[] args) {
-        String inputFile = "C:\\Users\\Artist-Code\\Downloads\\Document 1 this.name.pdf"; // Ruta del archivo;
-        String outputFile = "C:\\Users\\Artist-Code\\Downloads\\documento_editado.pdf";
-        try {
-             editVehiclePDF(inputFile, outputFile, "090998097809",
-                    "NUEVA_MARCA", "NUEVO_MODELO", "2024",
-                    "NUEVO_CHASIS", "NUEVO_PROPIETARIO",
-                    "IBA1250");
-            System.out.println("PDF modificado exitosamente!");
+    private static void generate(PDDocument document, PDPage page,
+                          PDType0Font customFont, PDType0Font customFontBold,
+                          String outputPath, String nRevision,
+                          String newMarca, String newModelo,
+                          String year, String newChasis,
+                          String newPropietario,
+                          String newPlaca) throws IOException {
+
+        try (PDPageContentStream contentStream = new PDPageContentStream(
+                document, page,
+                PDPageContentStream.AppendMode.APPEND,
+                true, true)) {
+
+            contentStream.setFont(customFont, 8);
+
+            // Configurar transparencia para el fondo blanco que cubrirá el texto antiguo
+            PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
+            graphicsState.setNonStrokingAlphaConstant(1f);
+            graphicsState.setStrokingAlphaConstant(1f);
+            graphicsState.setAlphaSourceFlag(true);
+            contentStream.setGraphicsStateParameters(graphicsState);
+
+            // Sobrescribir los campos con fondo blanco primero
+            //No. revision
+            contentStream.setNonStrokingColor(255, 255, 255);
+            contentStream.addRect(74, 708, 68, 10); // x, y, width, height
+            contentStream.fill();
+
+            //Fecha revision
+            contentStream.setNonStrokingColor(1, 255, 255);
+            contentStream.addRect(85, 683, 60, 10); // x, y, width, height
+            contentStream.fill();
+
+            // 1. Marca
+            contentStream.setNonStrokingColor(255, 255, 255);
+            contentStream.addRect(181, 708, 190, 11); // x, y, width, height
+            contentStream.fill();
+
+            // 2. Modelo
+            contentStream.setNonStrokingColor(255, 255, 255);
+            contentStream.addRect(185, 695, 190, 11);
+            contentStream.fill();
+
+            // 2. Year
+            contentStream.setNonStrokingColor(255, 255, 255);
+            contentStream.addRect(185, 683, 130, 11);
+            contentStream.fill();
+
+            // 3. Chasis
+            contentStream.setNonStrokingColor(255, 255, 255);
+            contentStream.addRect(193, 662, 200, 12);
+            contentStream.fill();
+
+            // 4. Propietario
+            contentStream.setNonStrokingColor(255, 255, 255);
+            contentStream.addRect(150, 620, 200, 12);
+            contentStream.fill();
+
+            // 5. Placa
+            contentStream.setNonStrokingColor(255, 255, 255);
+            contentStream.addRect(467, 697, 88, 15);
+            contentStream.fill();
+
+            // Escribir los nuevos valores
+            contentStream.setNonStrokingColor(0, 0, 0);
+
+            // N. revision
+            contentStream.beginText();
+            contentStream.newLineAtOffset(75, 710); // x, y
+            contentStream.showText(nRevision);
+            contentStream.endText();
+
+            // Fecha revision
+            contentStream.beginText();
+            contentStream.newLineAtOffset(68, 699); // x, y
+            contentStream.showText("NUEVA FECHAAA");
+            contentStream.endText();
+
+            // Marca
+            contentStream.beginText();
+            contentStream.newLineAtOffset(186, 709); // x, y
+            contentStream.showText(newMarca);
+            contentStream.endText();
+
+            // Modelo
+            contentStream.beginText();
+            contentStream.newLineAtOffset(186, 698);
+            contentStream.showText(newModelo);
+            contentStream.endText();
+
+            // Año
+            contentStream.beginText();
+            contentStream.newLineAtOffset(188, 686);
+            contentStream.showText(year);
+            contentStream.endText();
+
+            // Chasis
+            contentStream.beginText();
+            contentStream.newLineAtOffset(193, 664);
+            contentStream.showText(newChasis);
+            contentStream.endText();
+
+            // Propietario
+            contentStream.beginText();
+            contentStream.newLineAtOffset(152, 623);
+            contentStream.showText(newPropietario);
+            contentStream.endText();
+
+            // Placa
+            contentStream.beginText();
+            contentStream.newLineAtOffset(490, 701);
+            contentStream.setFont(customFontBold, 8);
+            contentStream.showText(newPlaca);
+            contentStream.endText();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-    }
 
+        // Guardar el documento modificado
+        document.save(outputPath);
+        document.close();
+    }
 
 }

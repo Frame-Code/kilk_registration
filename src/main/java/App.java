@@ -1,11 +1,16 @@
 
 import UI.InitWindow;
 import UI.PrincipalWindow;
+
 import com.formdev.flatlaf.FlatDarkLaf;
+
 import controller.InitWindowController;
 import controller.PrincipalWindowController;
+
 import requests.impl.RequestLoginImpl;
 import requests.impl.RequestSearchImpl;
+
+import service.PDFGenerator;
 import service.impl.*;
 import service.TXTGenerator;
 
@@ -58,7 +63,10 @@ public class App {
                                 new PlateParserServiceImpl(),
                                 new ConsultPlateServiceImpl(new RequestSearchImpl(client, cookieManager)),
                                 new VehicleParseServiceImpl()
-                        ), new TXTGenerator(), new SaveFileServiceImpl()
+                        ), new DocumentCreatorServiceImpl(
+                                new TXTGenerator(),
+                                new PDFGenerator()
+                        ), new SaveFileServiceImpl()
                 ).addListeners(client, cookieManager);
                 principalFrm.open();
 

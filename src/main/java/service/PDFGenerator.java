@@ -1,5 +1,6 @@
 package service;
 
+import dto.DocumentDataDTO;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -12,16 +13,13 @@ import java.io.IOException;
 /**
  * @author Daniel Mora Cantillo
  */
-public class PDFGenerator {
+public class PDFGenerator extends DocumentGenerator {
     private final File NORMAL_FONT = new File("src\\main\\resources\\fonts\\arialmt.ttf");
     private final File BOLD_FONT = new File("src\\main\\resources\\fonts\\ARIALMTBLACK.TTF");
 
-    public void create(String inputPath, String outputPath, String nRevision,
-                       String marca, String modelo,
-                       String year, String chasis,
-                       String propietario,
-                       String placa) throws IOException {
-        PDDocument document = PDDocument.load(new File(inputPath));
+    @Override
+    public void generate(DocumentDataDTO documentDataDTO) throws IOException {
+        PDDocument document = PDDocument.load(new File(documentDataDTO.getInputPath()));
 
         // Asumimos que los campos están en la primera página
         PDPage page = document.getPage(0);
@@ -29,8 +27,15 @@ public class PDFGenerator {
         PDType0Font customFont = PDType0Font.load(document, NORMAL_FONT);
         PDType0Font customFontBold = PDType0Font.load(document, BOLD_FONT);
 
-        generate(document, page, customFont, customFontBold, outputPath, nRevision,
-                marca, modelo, year, chasis, propietario, placa);
+        generate(document, page, customFont, customFontBold, documentDataDTO.getOutputPath(),
+                documentDataDTO.getContentFields().get("nRevision"),
+                documentDataDTO.getContentFields().get("marca"),
+                documentDataDTO.getContentFields().get("modelo"),
+                documentDataDTO.getContentFields().get("year"),
+                documentDataDTO.getContentFields().get("chasis"),
+                documentDataDTO.getContentFields().get("propietario"),
+                documentDataDTO.getContentFields().get("placa"));
+
     }
 
     private void generate(PDDocument document, PDPage page,
@@ -46,7 +51,7 @@ public class PDFGenerator {
                 PDPageContentStream.AppendMode.APPEND,
                 true, true)) {
 
-            contentStream.setFont(customFont , 8);
+            contentStream.setFont(customFont, 8);
 
             // Configurar transparencia para el fondo blanco que cubrirá el texto antiguo
             PDExtendedGraphicsState graphicsState = new PDExtendedGraphicsState();
@@ -57,47 +62,58 @@ public class PDFGenerator {
 
             // Sobrescribir los campos con fondo blanco primero
             //No. revision
-            contentStream.setNonStrokingColor(1, 255, 255);
+            contentStream.setNonStrokingColor(255, 255, 255);
             contentStream.addRect(74, 708, 68, 10); // x, y, width, height
             contentStream.fill();
 
-            // 1. Marca
+            //Fecha revision
             contentStream.setNonStrokingColor(1, 255, 255);
+            contentStream.addRect(85, 683, 60, 10); // x, y, width, height
+            contentStream.fill();
+
+            // 1. Marca
+            contentStream.setNonStrokingColor(255, 255, 255);
             contentStream.addRect(181, 708, 190, 11); // x, y, width, height
             contentStream.fill();
 
             // 2. Modelo
-            contentStream.setNonStrokingColor(1, 255, 255);
+            contentStream.setNonStrokingColor(255, 255, 255);
             contentStream.addRect(185, 695, 190, 11);
             contentStream.fill();
 
             // 2. Year
-            contentStream.setNonStrokingColor(1, 255, 255);
+            contentStream.setNonStrokingColor(255, 255, 255);
             contentStream.addRect(185, 683, 130, 11);
             contentStream.fill();
 
             // 3. Chasis
-            contentStream.setNonStrokingColor(1, 255, 255);
+            contentStream.setNonStrokingColor(255, 255, 255);
             contentStream.addRect(193, 662, 200, 12);
             contentStream.fill();
 
             // 4. Propietario
-            contentStream.setNonStrokingColor(1, 255, 255);
+            contentStream.setNonStrokingColor(255, 255, 255);
             contentStream.addRect(150, 620, 200, 12);
             contentStream.fill();
 
             // 5. Placa
-            contentStream.setNonStrokingColor(1, 255, 255);
+            contentStream.setNonStrokingColor(255, 255, 255);
             contentStream.addRect(467, 697, 88, 15);
             contentStream.fill();
 
             // Escribir los nuevos valores
             contentStream.setNonStrokingColor(0, 0, 0);
 
-            // Marca
+            // N. revision
             contentStream.beginText();
             contentStream.newLineAtOffset(75, 710); // x, y
             contentStream.showText(nRevision);
+            contentStream.endText();
+
+            // Fecha revision
+            contentStream.beginText();
+            contentStream.newLineAtOffset(68, 699); // x, y
+            contentStream.showText("NUEVA FECHAAA");
             contentStream.endText();
 
             // Marca
@@ -144,4 +160,5 @@ public class PDFGenerator {
         document.save(outputPath);
         document.close();
     }
+
 }

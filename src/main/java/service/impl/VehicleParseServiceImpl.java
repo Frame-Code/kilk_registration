@@ -32,7 +32,8 @@ public class VehicleParseServiceImpl implements IVehicleInfoParserService {
                                 || value.contains("Fecha de Renovacion del documento de circulacion anual")
                                 || value.contains("Marca")
                                 || value.contains("Modelo")
-                                || value.contains("Propietario"))
+                                || value.contains("Propietario")
+                                || value.contains("Año Vehiculo"))
                 .map(label -> {
                     Matcher matcher = Pattern.compile("<td>(.*?)</td>").matcher(label);
                     if (matcher.find()) {
@@ -60,6 +61,9 @@ public class VehicleParseServiceImpl implements IVehicleInfoParserService {
         }
         if (!isNull(values.get(5))) {
             vehicle.setPropietario(values.get(5));
+        }
+        if(!isNull(values.get(6))) {
+            vehicle.setAnioVehiculo(values.get(6));
         }
 
         if(vehicle.getPlaca() == null) {

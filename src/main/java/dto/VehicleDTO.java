@@ -16,6 +16,7 @@ public class VehicleDTO {
     private String placa;
     private String chasis;
     private LocalDate fechaRenovacion;
+    private String anioVehiculo;
     private String marca;
     private String modelo;
     private String propietario;
