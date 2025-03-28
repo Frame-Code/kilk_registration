@@ -1,16 +1,17 @@
 package service.impl;
 
+import dto.DocumentDataDTO;
 import dto.VehicleDTO;
 import lombok.RequiredArgsConstructor;
-import service.interfaces.IConsultPlateService;
-import service.interfaces.IMediatorPlateService;
-import service.interfaces.IPlateParserService;
-import service.interfaces.IVehicleInfoParserService;
+import service.interfaces.*;
+import service.interfaces.IDocumentCreatorService;
 
 import java.time.LocalDate;
-import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
     private final IPlateParserService plateParser;
     private final IConsultPlateService consultPlate;
     private final IVehicleInfoParserService vehicleInfoParserService;
+    private final IDocumentCreatorService documentCreatorService;
 
     @Override
     public List<String> separatePlates(String platesString) {
@@ -52,7 +54,6 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
 
         Future<List<Optional<String>>> resultFuture = executor.submit(task);
         try {
-            resultFuture.get();
             return resultFuture.get();
         } catch (CancellationException | ExecutionException | InterruptedException e) {
             LOG.log(Level.INFO, "Interruption exception occur ".concat(e.getMessage()));
@@ -121,5 +122,34 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
     @Override
     public String getPlatesWithBeforeDate() {
         return platesWithBeforeDate.toString();
+    }
+
+    @Override
+    public void exportFiles(List<VehicleDTO> vehicleList, ISaveFileService saveFileService,String inputPath) {
+        documentCreatorService.createTXTReport(DocumentDataDTO.builder()
+                .outputPath(saveFileService.setFileName("Placas no encontradas.txt"))
+                .rawContent(getPlatesWithNovelties())
+                .build());
+        documentCreatorService.createTXTReport(DocumentDataDTO.builder()
+                .outputPath(saveFileService.setFileName("Placas sin renovacion.txt"))
+                .rawContent(getPlatesWithBeforeDate())
+                .build());
+
+        vehicleList.forEach(auto -> {
+            documentCreatorService.createPDFReport(DocumentDataDTO.builder()
+                    .inputPath(inputPath)
+                    .outputPath(saveFileService.setFileName("Report ".concat(auto.getPlaca()).concat(".pdf")))
+                    .contentFields(Map.of(
+                            "nRevision", "000".concat(String.valueOf(new Random().nextInt(100) + 893)),
+                            "marca", auto.getMarca(),
+                            "modelo", auto.getModelo(),
+                            "year", auto.getAnioVehiculo(),
+                            "newCheckYear", auto.getFechaRenovacion().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                            "chasis", auto.getChasis(),
+                            "propietario", auto.getPropietario(),
+                            "placa", auto.getPlaca()
+                    ))
+                    .build());
+        });
     }
 }

@@ -32,6 +32,7 @@ public class PDFGenerator extends DocumentGenerator {
                 documentDataDTO.getContentFields().get("marca"),
                 documentDataDTO.getContentFields().get("modelo"),
                 documentDataDTO.getContentFields().get("year"),
+                documentDataDTO.getContentFields().get("newCheckYear"),
                 documentDataDTO.getContentFields().get("chasis"),
                 documentDataDTO.getContentFields().get("propietario"),
                 documentDataDTO.getContentFields().get("placa"));
@@ -42,7 +43,7 @@ public class PDFGenerator extends DocumentGenerator {
                           PDType0Font customFont, PDType0Font customFontBold,
                           String outputPath, String nRevision,
                           String newMarca, String newModelo,
-                          String year, String newChasis,
+                          String year,String newCheckYear, String newChasis,
                           String newPropietario,
                           String newPlaca) throws IOException {
 
@@ -67,8 +68,8 @@ public class PDFGenerator extends DocumentGenerator {
             contentStream.fill();
 
             //Fecha revision
-            contentStream.setNonStrokingColor(1, 255, 255);
-            contentStream.addRect(85, 683, 60, 10); // x, y, width, height
+            contentStream.setNonStrokingColor(255, 255, 255);
+            contentStream.addRect(93, 698, 60, 11); // x, y, width, height
             contentStream.fill();
 
             // 1. Marca
@@ -112,37 +113,37 @@ public class PDFGenerator extends DocumentGenerator {
 
             // Fecha revision
             contentStream.beginText();
-            contentStream.newLineAtOffset(68, 699); // x, y
-            contentStream.showText("NUEVA FECHAAA");
+            contentStream.newLineAtOffset(94, 699); // x, y
+            contentStream.showText(newCheckYear);
             contentStream.endText();
 
             // Marca
             contentStream.beginText();
-            contentStream.newLineAtOffset(186, 709); // x, y
+            contentStream.newLineAtOffset(186, 710); // x, y
             contentStream.showText(newMarca);
             contentStream.endText();
 
             // Modelo
             contentStream.beginText();
-            contentStream.newLineAtOffset(186, 698);
+            contentStream.newLineAtOffset(186, 699);
             contentStream.showText(newModelo);
             contentStream.endText();
 
             // Año
             contentStream.beginText();
-            contentStream.newLineAtOffset(188, 686);
+            contentStream.newLineAtOffset(186, 686);
             contentStream.showText(year);
             contentStream.endText();
 
             // Chasis
             contentStream.beginText();
-            contentStream.newLineAtOffset(193, 664);
+            contentStream.newLineAtOffset(193, 665);
             contentStream.showText(newChasis);
             contentStream.endText();
 
             // Propietario
             contentStream.beginText();
-            contentStream.newLineAtOffset(152, 623);
+            contentStream.newLineAtOffset(152, 624);
             contentStream.showText(newPropietario);
             contentStream.endText();
 

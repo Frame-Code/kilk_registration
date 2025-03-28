@@ -1,5 +1,5 @@
 package UI.components;
-import java.io.File;
+
 import javax.swing.JFileChooser;
 
 /**
@@ -9,11 +9,11 @@ import javax.swing.JFileChooser;
 public class FileChooser extends JFileChooser{
     private final int userSelection;
 
-    public FileChooser() {
+    public FileChooser(String title, int typeFileChooser, boolean acceptAllFiles) {
         super();
-        setDialogTitle("Seleccione la ubicación donde se guardan los reportes");
-        setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        setAcceptAllFileFilterUsed(false);
+        setDialogTitle(title);
+        setFileSelectionMode(typeFileChooser);
+        setAcceptAllFileFilterUsed(acceptAllFiles);
         this.userSelection = showSaveDialog(null);
     }
 

@@ -62,11 +62,9 @@ public class App {
                         new MediatorPlateServiceImpl(
                                 new PlateParserServiceImpl(),
                                 new ConsultPlateServiceImpl(new RequestSearchImpl(client, cookieManager)),
-                                new VehicleParseServiceImpl()
-                        ), new DocumentCreatorServiceImpl(
-                                new TXTGenerator(),
-                                new PDFGenerator()
-                        ), new SaveFileServiceImpl()
+                                new VehicleParseServiceImpl(),
+                                new DocumentCreatorServiceImpl(new TXTGenerator(), new PDFGenerator())
+                        ), new SaveFileServiceImpl(), new InputFileServiceImpl()
                 ).addListeners(client, cookieManager);
                 principalFrm.open();
 

@@ -4,17 +4,19 @@ import UI.components.FileChooser;
 import service.interfaces.ISaveFileService;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
 /**
  * @author Daniel Mora Cantillo
  */
-public class SaveFileServiceImpl implements ISaveFileService {
+public class InputFileServiceImpl implements ISaveFileService {
     private FileChooser fileChooser;
 
     @Override
     public void openFileChooser() {
-        fileChooser = new FileChooser("Seleccione la ubicación donde se guardan los reportes", JFileChooser.DIRECTORIES_ONLY, false);
+        fileChooser = new FileChooser("Selecciona la plantilla, un archivo pdf", JFileChooser.FILES_ONLY, false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos PDF (*.pdf)", "pdf"));
     }
 
     @Override
@@ -24,6 +26,6 @@ public class SaveFileServiceImpl implements ISaveFileService {
 
     @Override
     public String setFileName(String fileName) {
-        return fileChooser.filePath().concat(File.separator + fileName);
+        return File.separator + fileName;
     }
 }

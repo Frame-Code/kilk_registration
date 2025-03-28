@@ -23,7 +23,7 @@ public class VehicleParseServiceImpl implements IVehicleInfoParserService {
 
     @Override
     public Optional<VehicleDTO> parseVehicle(String htmlResponse) {
-        String html = htmlResponse.substring(0, Math.min(4200, htmlResponse.length()));
+        String html = htmlResponse.substring(0, Math.min(6000, htmlResponse.length()));
         List<String> labels = Arrays.asList(html.split("</tr>"));
         List<String> values = labels.stream()
                 .filter(value ->

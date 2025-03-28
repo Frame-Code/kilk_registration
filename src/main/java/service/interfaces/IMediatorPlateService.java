@@ -15,5 +15,6 @@ public interface IMediatorPlateService {
     String getPlatesWithNovelties();
     String getPlatesWithBeforeDate();
     List<VehicleDTO> verifyRenovationDate(List<Optional<VehicleDTO>> vehicleList);
+    void exportFiles(List<VehicleDTO> vehicleList, ISaveFileService saveFileService, String inputPath);
 
 }
