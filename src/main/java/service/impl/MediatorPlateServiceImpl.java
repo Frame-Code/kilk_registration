@@ -173,14 +173,21 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
 
     private void verifyResultTask(ResultTaskDTO resultTaskDTO, String messageOk) {
         if(!resultTaskDTO.isOk()) {
-            showDialogMessage(resultTaskDTO.getErrorMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            showDialogMessage(resultTaskDTO.getErrorMessage(), "Error", JOptionPane.ERROR_MESSAGE, true);
             return;
         }
-        showDialogMessage(messageOk, "Success", JOptionPane.INFORMATION_MESSAGE);
+        showDialogMessage(messageOk, "Success", JOptionPane.INFORMATION_MESSAGE, false);
     }
 
-    private void showDialogMessage(String message, String title, int typeMessage) {
-        JOptionPane.showMessageDialog(null,
-                message, title, typeMessage);
+    private void showDialogMessage(String message, String title, int typeMessage, boolean isError) {
+        int time = isError? 7000: 1250;
+        JOptionPane pane = new JOptionPane(message, typeMessage);
+        JDialog dialog = pane.createDialog(null, title);
+
+        Timer timer = new Timer(time, e -> dialog.dispose());
+        timer.setRepeats(false);
+        timer.start();
+
+        dialog.setVisible(true);
     }
 }
