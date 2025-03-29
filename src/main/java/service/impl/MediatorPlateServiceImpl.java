@@ -63,7 +63,6 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
             return resultFuture.get();
         } catch (CancellationException | ExecutionException | InterruptedException e) {
             executor.shutdown();
-            Thread.currentThread().interrupt();
             LOG.log(Level.INFO, "Interruption exception occur ".concat(e.getMessage()));
             return List.of();
         } finally {
@@ -99,7 +98,6 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
             return resultFuture.get();
         } catch (CancellationException | ExecutionException | InterruptedException ex) {
             executor.shutdown();
-            Thread.currentThread().interrupt();
             LOG.log(Level.WARNING, "Interruption exception occur ".concat(ex.getMessage()));
             return Optional.empty();
         } finally {
@@ -146,13 +144,13 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
                 .outputPath(saveFileService.setFileName("Placas no encontradas.txt"))
                 .rawContent(getPlatesWithNovelties())
                 .build());
-        verifyResultTask(resultTask1);
+        verifyResultTask(resultTask1, "Reporte de 'placas no encontradas' creado correctamente");
 
         ResultTaskDTO resultTask2 = documentCreatorService.createTXTReport(DocumentDataDTO.builder()
-                .outputPath(saveFileService.setFileName("Placas sin renovacion.txt"))
+                .outputPath(saveFileService.setFileName("Placas sin renovación.txt"))
                 .rawContent(getPlatesWithBeforeDate())
                 .build());
-        verifyResultTask(resultTask2);
+        verifyResultTask(resultTask2, "Reporte de 'placas sin renovación' creado correctamente");
 
         vehicleList.forEach(auto -> {
             ResultTaskDTO resultTask = documentCreatorService.createPDFReport(DocumentDataDTO.builder()
@@ -169,14 +167,16 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
                             CONTENT_FIELDS_MAP_ENUM.PLACA.toString(), auto.getPlaca()
                     ))
                     .build());
-            verifyResultTask(resultTask);
+            verifyResultTask(resultTask, "Reporte PDF de la placa: " + auto.getPlaca() + " creado correctamente");
         });
     }
 
-    private void verifyResultTask(ResultTaskDTO resultTaskDTO) {
+    private void verifyResultTask(ResultTaskDTO resultTaskDTO, String messageOk) {
         if(!resultTaskDTO.isOk()) {
             showDialogMessage(resultTaskDTO.getErrorMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+        showDialogMessage(messageOk, "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void showDialogMessage(String message, String title, int typeMessage) {

@@ -15,8 +15,8 @@ public class InputFileServiceImpl implements ISaveFileService {
 
     @Override
     public void openFileChooser() {
-        fileChooser = new FileChooser("Selecciona la plantilla, un archivo pdf", JFileChooser.FILES_ONLY, false);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos PDF (*.pdf)", "pdf"));
+        fileChooser = new FileChooser("Selecciona la plantilla, un archivo pdf", JFileChooser.FILES_ONLY, true);
+
     }
 
     @Override

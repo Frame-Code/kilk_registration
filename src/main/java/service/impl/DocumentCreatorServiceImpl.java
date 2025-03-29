@@ -59,11 +59,10 @@ public class DocumentCreatorServiceImpl implements IDocumentCreatorService {
             return resultFuture.get();
         } catch (CancellationException | ExecutionException | InterruptedException e) {
             executor.shutdown();
-            Thread.currentThread().interrupt();
             LOG.log(Level.WARNING, "Interruption exception occur ".concat(e.getMessage()));
             return ResultTaskDTO.builder()
                     .isOk(false)
-                    .errorMessage("Error, task interrupted")
+                    .errorMessage("Error, task creating PDF report interrupted, error message: " + e.getMessage())
                     .build();
         }  finally {
             executor.shutdown();
@@ -89,7 +88,7 @@ public class DocumentCreatorServiceImpl implements IDocumentCreatorService {
             LOG.log(Level.SEVERE, "IO Exception creating the report txt with output path: ", documentDataDTO.getOutputPath());
             return ResultTaskDTO.builder()
                     .isOk(false)
-                    .errorMessage("\"Error, task interrupted")
+                    .errorMessage("Error, task interrupted, error message: " + e.getMessage())
                     .build();
         }
 

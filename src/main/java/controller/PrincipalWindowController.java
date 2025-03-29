@@ -28,7 +28,7 @@ public class PrincipalWindowController {
     private final IMediatorPlateService mediatorPlate;
     private final ISaveFileService saveFileService;
     private final ISaveFileService inputFileService;
-    private final LoadingDialog loadingDialog = new LoadingDialog("Loading", "Generating reports (don´t close this window)");
+    private final LoadingDialog loadingDialog = new LoadingDialog("Loading", "Generating reports (don't close this window)");
 
     public void addListeners() {
         principalFrm.getBtnClean().addActionListener(e -> principalFrm.getTxtArea().setText(""));
@@ -56,6 +56,13 @@ public class PrincipalWindowController {
             if(inputFileService.getFilePath() == null) {
                 return;
             }
+            if(!inputFileService.getFilePath().endsWith(".pdf")) {
+                JOptionPane.showMessageDialog(principalFrm,
+                        "Solo se admiten archivos PDF, vuelve a intentarlo",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                 @Override
@@ -71,10 +78,6 @@ public class PrincipalWindowController {
                     loadingDialog.close();
                     principalFrm.setEnabled(true);
                     principalFrm.getTxtArea().setText("");
-                    JOptionPane.showMessageDialog(principalFrm,
-                            "Reports generated correctly",
-                            "Success",
-                            JOptionPane.INFORMATION_MESSAGE);
                 }
             };
             worker.execute();
