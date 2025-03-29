@@ -1,12 +1,14 @@
 package service.impl;
 
 import dto.DocumentDataDTO;
+import dto.ResultTaskDTO;
 import dto.VehicleDTO;
 import lombok.RequiredArgsConstructor;
 import service.CONTENT_FIELDS_MAP_ENUM;
 import service.interfaces.*;
 import service.interfaces.IDocumentCreatorService;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -55,8 +57,13 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
 
         Future<List<Optional<String>>> resultFuture = executor.submit(task);
         try {
+            resultFuture.get();
+            executor.shutdown();
+            executor.shutdownNow();
             return resultFuture.get();
         } catch (CancellationException | ExecutionException | InterruptedException e) {
+            executor.shutdown();
+            Thread.currentThread().interrupt();
             LOG.log(Level.INFO, "Interruption exception occur ".concat(e.getMessage()));
             return List.of();
         } finally {
@@ -86,8 +93,13 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
         };
         Future<Optional<VehicleDTO>> resultFuture = executor.submit(task);
         try {
+            resultFuture.get();
+            executor.shutdown();
+            executor.shutdownNow();
             return resultFuture.get();
         } catch (CancellationException | ExecutionException | InterruptedException ex) {
+            executor.shutdown();
+            Thread.currentThread().interrupt();
             LOG.log(Level.WARNING, "Interruption exception occur ".concat(ex.getMessage()));
             return Optional.empty();
         } finally {
@@ -130,17 +142,20 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
 
     @Override
     public void exportFiles(List<VehicleDTO> vehicleList, ISaveFileService saveFileService,String inputPath) throws Exception {
-        documentCreatorService.createTXTReport(DocumentDataDTO.builder()
+        ResultTaskDTO resultTask1 = documentCreatorService.createTXTReport(DocumentDataDTO.builder()
                 .outputPath(saveFileService.setFileName("Placas no encontradas.txt"))
                 .rawContent(getPlatesWithNovelties())
                 .build());
-        documentCreatorService.createTXTReport(DocumentDataDTO.builder()
+        verifyResultTask(resultTask1);
+
+        ResultTaskDTO resultTask2 = documentCreatorService.createTXTReport(DocumentDataDTO.builder()
                 .outputPath(saveFileService.setFileName("Placas sin renovacion.txt"))
                 .rawContent(getPlatesWithBeforeDate())
                 .build());
+        verifyResultTask(resultTask2);
 
         vehicleList.forEach(auto -> {
-            documentCreatorService.createPDFReport(DocumentDataDTO.builder()
+            ResultTaskDTO resultTask = documentCreatorService.createPDFReport(DocumentDataDTO.builder()
                     .inputPath(inputPath)
                     .outputPath(saveFileService.setFileName("Report ".concat(auto.getPlaca()).concat(".pdf")))
                     .contentFields(Map.of(
@@ -154,6 +169,18 @@ public class MediatorPlateServiceImpl implements IMediatorPlateService {
                             CONTENT_FIELDS_MAP_ENUM.PLACA.toString(), auto.getPlaca()
                     ))
                     .build());
+            verifyResultTask(resultTask);
         });
+    }
+
+    private void verifyResultTask(ResultTaskDTO resultTaskDTO) {
+        if(!resultTaskDTO.isOk()) {
+            showDialogMessage(resultTaskDTO.getErrorMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showDialogMessage(String message, String title, int typeMessage) {
+        JOptionPane.showMessageDialog(null,
+                message, title, typeMessage);
     }
 }

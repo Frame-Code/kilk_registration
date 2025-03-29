@@ -26,18 +26,17 @@ public class App {
     private static final Logger LOG = Logger.getLogger(App.class.getName());
 
     public static void main(String[] args) {
-        if(LocalDate.now().isAfter(LocalDate.of(2025, 3, 29))) {
-            JOptionPane.showMessageDialog(null,
-                    "PAGAME O ESTA MADRE NO TE VUEVLE A FUNCIONAR PERROO!!!!",
-                    "PAGAMEEE!!!!!",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (UnsupportedLookAndFeelException e) {
             LOG.log(Level.WARNING, "Cat not load look and feel");
+        }
+        if(LocalDate.now().isAfter(LocalDate.of(2025, 3, 29))) {
+            JOptionPane.showMessageDialog(null,
+                    "PAGAME O ESTA PENDEJADA NO TE VUELVE A FUNCIONAR PERROO!!!!",
+                    "PAGAMEEE!!!!!",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         InitWindow initWindowFrm = new InitWindow();

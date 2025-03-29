@@ -1,6 +1,7 @@
 package service.interfaces;
 
 import dto.DocumentDataDTO;
+import dto.ResultTaskDTO;
 
 import java.io.IOException;
 
@@ -8,6 +9,6 @@ import java.io.IOException;
  * @author Daniel Mora Cantillo
  */
 public interface IDocumentCreatorService {
-    void createPDFReport(DocumentDataDTO documentDataDTO);
-    void createTXTReport(DocumentDataDTO documentDataDTO);
+    ResultTaskDTO createPDFReport(DocumentDataDTO documentDataDTO);
+    ResultTaskDTO createTXTReport(DocumentDataDTO documentDataDTO);
 }

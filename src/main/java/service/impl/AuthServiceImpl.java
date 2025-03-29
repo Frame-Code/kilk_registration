@@ -14,7 +14,9 @@ import service.interfaces.IAuthService;
  */
 @RequiredArgsConstructor
 public class AuthServiceImpl implements IAuthService {
-    private final Dotenv dotenv = Dotenv.load();
+    private final Dotenv dotenv = Dotenv.configure()
+            .directory("/").filename(".env")
+            .load();
     private final IRequest requestLogin;
 
     @Override

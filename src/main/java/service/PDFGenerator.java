@@ -7,17 +7,20 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 
 /**
  * @author Daniel Mora Cantillo
  */
 public class PDFGenerator extends DocumentGenerator {
-    private final File NORMAL_FONT = new File("src\\main\\resources\\fonts\\arialmt.ttf");
-    private final File BOLD_FONT = new File("src\\main\\resources\\fonts\\ARIALMTBLACK.TTF");
-
+    //private final File NORMAL_FONT = new File("src\\main\\resources\\fonts\\arialmt.ttf");
+    //private File NORMAL_FONT;
+    //private File BOLD_FONT;
+    //private File BOLD_FONT = new File("src\\main\\resources\\fonts\\ARIALMTBLACK.TTF");
 
     @Override
     public void generate(DocumentDataDTO documentDataDTO) throws IOException {
@@ -25,8 +28,8 @@ public class PDFGenerator extends DocumentGenerator {
 
         PDPage page = document.getPage(0);
 
-        PDType0Font customFont = PDType0Font.load(document, NORMAL_FONT);
-        PDType0Font customFontBold = PDType0Font.load(document, BOLD_FONT);
+        PDType0Font customFont = PDType0Font.load(document, PDFGenerator.class.getResourceAsStream("/fonts/arialmt.ttf"));
+        PDType0Font customFontBold = PDType0Font.load(document, PDFGenerator.class.getResourceAsStream("/fonts/ARIALMTBLACK.TTF"));
 
         generate(document, page, customFont, customFontBold, documentDataDTO.getOutputPath(),
                 documentDataDTO.getContentFields().get(CONTENT_FIELDS_MAP_ENUM.N_REVISION.toString()),

@@ -32,7 +32,10 @@ public class PrincipalWindowController {
 
     public void addListeners() {
         principalFrm.getBtnClean().addActionListener(e -> principalFrm.getTxtArea().setText(""));
-        principalFrm.getBtnClose().addActionListener(e -> principalFrm.close());
+        principalFrm.getBtnClose().addActionListener(e -> {
+            principalFrm.close();
+            System.exit(0);
+        });
 
         principalFrm.getBtnGenerate().addActionListener(e -> {
 
@@ -132,5 +135,11 @@ public class PrincipalWindowController {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public void showDialogMessage(String message, String title, int typeMessage) {
+        JOptionPane.showMessageDialog(principalFrm,
+                message, title, typeMessage);
+    }
+
 
 }
