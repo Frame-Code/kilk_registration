@@ -2,10 +2,12 @@ package service.impl;
 
 import com.google.gson.Gson;
 import dto.UserLoginDTO;
-import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Optional;
+
+import io.github.cdimascio.dotenv.DotEnvException;
 import lombok.RequiredArgsConstructor;
 import requests.interfaces.IRequest;
+import service.EnvSingleton;
 import service.interfaces.IAuthService;
 
 /**
@@ -14,18 +16,21 @@ import service.interfaces.IAuthService;
  */
 @RequiredArgsConstructor
 public class AuthServiceImpl implements IAuthService {
-    private final Dotenv dotenv = Dotenv.configure()
-            .directory("/").filename(".env")
-            .load();
     private final IRequest requestLogin;
 
     @Override
     public Optional<String> log_in(String token) {
-        String jsonBody = new Gson().toJson(
-                new UserLoginDTO(token,
-                        dotenv.get("USERNAME_WEB"),
-                        dotenv.get("PASSWORD_WEB")));
-        return requestLogin.sendPost(jsonBody);
+        try {
+            EnvSingleton env = EnvSingleton.getInstance();
+            String jsonBody = new Gson().toJson(
+                    new UserLoginDTO(token,
+                            env.getDotenv().get("USERNAME_WEB"),
+                            env.getDotenv().get("PASSWORD_WEB")));
+            return requestLogin.sendPost(jsonBody);
+        } catch (DotEnvException e) {
+            throw new RuntimeException("Can't load environment variables");
+        }
+
     }
 
     @Override

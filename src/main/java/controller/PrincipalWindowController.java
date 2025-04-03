@@ -122,7 +122,7 @@ public class PrincipalWindowController {
         if(vehicleListFinal.isEmpty()) {
             LOG.log(Level.WARNING, "Error don't exist vehicles to generate the report");
             JOptionPane.showMessageDialog(principalFrm,
-                    "No se han encontrado vehicles para generar el reporte",
+                    "No se han encontrado vehiculos para generar el reporte",
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
             return;

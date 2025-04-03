@@ -47,14 +47,29 @@ public class RequestLoginImpl implements IRequest {
                     .POST(HttpRequest.BodyPublishers.ofString(body))
                     .header("Content-Type", "application/json")
                     .header("Accept", "*/*")
-                    .header("Accept-Encoding", "gzip, deflate, br")
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200 || response.statusCode() == 302) {
-                LOG.log(Level.INFO, "Request to login has been successfully");
+            if(response.statusCode() == 302) {
+                if(response.body().contains("Sus datos de acceso son incorrectos.")) {
+                    LOG.log(Level.WARNING, "Error can't login, bad access credentials");
+                    return Optional.empty();
+                }
+                LOG.log(Level.INFO, "Login successfully");
                 return Optional.of(response.body());
             }
+
+            if(response.statusCode() == 200) {
+                if(response.body().contains("Sus datos de acceso son incorrectos.")) {
+                    LOG.log(Level.WARNING, "Error can't login, bad access credentials");
+                    return Optional.empty();
+                }
+                LOG.log(Level.INFO, "Login successfully");
+                return Optional.of(response.body());
+            }
+
+
+
             LOG.log(Level.WARNING, "Error on the login, status code: ".concat(String.valueOf(response.statusCode())));
             return Optional.empty();
         } catch (IOException | InterruptedException | URISyntaxException e) {

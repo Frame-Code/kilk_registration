@@ -31,17 +31,17 @@ public class InitWindowController {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
 
-            return false;
+            System.exit(1);
         }
         
         Optional<String> response = authService.log_in(token.get());
         if(response.isEmpty()) {
             LOG.log(Level.WARNING, "Can't get response");
             JOptionPane.showMessageDialog(frmInitWindow,
-                    "Error when login in",
+                    "Error on the Log-in, possible bad credentials",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-            return false;
+            System.exit(1);
         }
 
         LOG.log(Level.INFO, "Login successfully");
