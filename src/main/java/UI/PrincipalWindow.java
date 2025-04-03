@@ -22,8 +22,8 @@ public class PrincipalWindow extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Generate report...");
-        ImageIcon icono = new ImageIcon(Objects.requireNonNull(PrincipalWindow.class.getResource("/images/applicationIcon.png")));
-        setIconImage(icono.getImage());
+        ImageIcon icon = new ImageIcon(Objects.requireNonNull(PrincipalWindow.class.getResource("/images/applicationIcon.png")));
+        setIconImage(icon.getImage());
     }
 
     public void open() {

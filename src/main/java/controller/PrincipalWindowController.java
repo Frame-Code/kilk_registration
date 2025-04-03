@@ -125,7 +125,6 @@ public class PrincipalWindowController {
                     "No se han encontrado vehiculos para generar el reporte",
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
-            return;
         }
 
         try {
@@ -133,7 +132,7 @@ public class PrincipalWindowController {
         } catch (Exception e) {
             LOG.log(Level.WARNING, "Error generating reports");
             JOptionPane.showMessageDialog(principalFrm,
-                    "Error creando reportes PDF y TXT",
+                    "Error creando reportes PDF or TXT",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }

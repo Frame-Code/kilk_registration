@@ -37,12 +37,14 @@ public class VehicleParseServiceImpl implements IVehicleInfoParserService {
                 .map(label -> {
                     Matcher matcher = Pattern.compile("<td>(.*?)</td>").matcher(label);
                     if (matcher.find()) {
+                        if(matcher.group(1).isEmpty() || matcher.group(1).isBlank()) {
+                            return null;
+                        }
                         return matcher.group(1);
                     }
                     return null;
                 })
                 .toList();
-
         VehicleDTO vehicle = new VehicleDTO();
         if (!isNull(values.get(0))) {
             vehicle.setPlaca(values.get(0));
@@ -65,17 +67,16 @@ public class VehicleParseServiceImpl implements IVehicleInfoParserService {
         if(!isNull(values.get(6))) {
             vehicle.setAnioVehiculo(values.get(6));
         }
-
         if(vehicle.getPlaca() == null) {
             LOG.log(Level.WARNING, "Not vehicle founded");
             return Optional.empty();
         }
-        LOG.log(Level.INFO, "Vehicle founded");
+        LOG.log(Level.INFO, "Vehicle possible founded");
         return Optional.of(vehicle);
     }
 
     private boolean isNull(String value) {
-        return value == null || value.isEmpty();
+        return value == null || value.trim().isEmpty();
     }
 
     private LocalDate getDateFromString(String date) {
